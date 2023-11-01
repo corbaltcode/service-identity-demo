@@ -1,0 +1,6 @@
+---
+dependencies:
+  - role: spire_agent
+    vars:
+      server_address: '{{ spire_server_address }}'
+      server_port: '{{ spire_server_port }}'

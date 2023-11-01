@@ -1,0 +1,51 @@
+---
+- name: server.conf
+  ansible.builtin.template:
+    src: server.conf.j2
+    dest: /opt/spire/conf/server/server.conf
+
+- name: spire-server systemd service
+  become: true
+  ansible.builtin.copy:
+    src: spire-server.service
+    dest: /etc/systemd/system/
+
+# - name: spire-server systemd service started
+#   become: true
+#   ansible.builtin.systemd:
+#     name: spire-server.service
+#     state: started
+
+# - name: spire-server listening
+#   ansible.builtin.wait_for:
+#     port: '{{ spire_server_port }}'
+
+# - name: echo client node registration
+#   ansible.builtin.import_tasks:
+#     file: node_registration.yml
+#   vars:
+#     spiffe_id: spiffe://{{ trust_domain }}/echo/client-node
+#     selector: '{{ client_node_selector }}'
+
+# - name: echo client workload registration
+#   ansible.builtin.import_tasks:
+#     file: workload_registration.yml
+#   vars:
+#     parent_id: spiffe://{{ trust_domain }}/echo/client-node
+#     spiffe_id: spiffe://{{ trust_domain }}/echo/client
+#     selector: unix:user:ec2-user
+
+# - name: echo server node registration
+#   ansible.builtin.import_tasks:
+#     file: node_registration.yml
+#   vars:
+#     spiffe_id: spiffe://{{ trust_domain }}/echo/server-node
+#     selector: '{{ server_node_selector }}'
+
+# - name: echo server workload registration
+#   ansible.builtin.import_tasks:
+#     file: workload_registration.yml
+#   vars:
+#     parent_id: spiffe://{{ trust_domain }}/echo/server-node
+#     spiffe_id: spiffe://{{ trust_domain }}/echo/server
+#     selector: unix:user:ec2-user

@@ -1,0 +1,11 @@
+- name: workload registration exists ({{ spiffe_id }})
+  shell:
+    cmd: "/opt/spire/bin/spire-server entry show -spiffeID {{ spiffe_id }} | grep SPIFFE"
+  register:
+    entry
+  failed_when: entry.rc > 1
+
+- name: workload registration ({{ spiffe_id }})
+  when: entry.rc != 0
+  ansible.builtin.command:
+    cmd: /opt/spire/bin/spire-server entry create -parentID {{ parent_id }} -spiffeID {{ spiffe_id }} -selector {{ selector }}

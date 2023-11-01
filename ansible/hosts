@@ -1,0 +1,19 @@
+[all:vars]
+# set these vars
+aws_account_id=
+trust_domain=
+
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+client_private_ip={{ hostvars[groups["client"][0]]["ansible_all_ipv4_addresses"][0] }}
+server_private_ip={{ hostvars[groups["server"][0]]["ansible_all_ipv4_addresses"][0] }}
+spire_server_address={{ hostvars[groups["spire_server"][0]]["ansible_all_ipv4_addresses"][0] }}
+spire_server_port=8081
+
+[spire_server]
+# enter SPIRE server public IP
+
+[client]
+# enter client public IP
+
+[server]
+# enter server public IP

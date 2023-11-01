@@ -1,0 +1,7 @@
+.terraform
+terraform.tfstate
+
+echo-spire/client/client
+echo-spire/server/server
+echo/client/client
+echo/server/server

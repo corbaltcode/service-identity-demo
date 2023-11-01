@@ -1,0 +1,17 @@
+---
+- name: spire
+  become: true
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: https://github.com/spiffe/spire/releases/download/v{{ version }}/spire-{{ version }}-linux-amd64-musl.tar.gz
+    dest: /tmp/
+    creates: /tmp/spire-{{ version }}
+
+- name: /opt/spire
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: /tmp/spire-{{ version }}/
+    dest: /opt/spire
+    owner: ec2-user
+    group: ec2-user

@@ -1,0 +1,73 @@
+---
+- name: go
+  become: true
+  ansible.builtin.yum:
+    name: golang
+    state: present
+
+- name: git
+  become: true
+  ansible.builtin.yum:
+    name: git
+    state: present
+
+- name: ghostunnel
+  become: true
+  ansible.builtin.get_url:
+    url: https://github.com/ghostunnel/ghostunnel/releases/download/{{ ghostunnel_version }}/ghostunnel-linux-amd64
+    dest: /usr/local/bin/ghostunnel
+    mode: '0755'
+
+- name: service-identity-demo git repo
+  ansible.builtin.git:
+    repo: https://github.com/corbaltcode/service-identity-demo.git
+    dest: /home/ec2-user/demo
+
+- name: echo client
+  ansible.builtin.command:
+    chdir: /home/ec2-user/demo/echo/client
+    cmd: go build
+    creates: client
+
+- name: echo server
+  ansible.builtin.command:
+    chdir: /home/ec2-user/demo/echo/server
+    cmd: go build
+    creates: server
+
+- name: echo-spire client
+  ansible.builtin.command:
+    chdir: /home/ec2-user/demo/echo-spire/client
+    cmd: go build
+    creates: client
+
+- name: echo-spire server
+  ansible.builtin.command:
+    chdir: /home/ec2-user/demo/echo-spire/server
+    cmd: go build
+    creates: server
+
+- name: /etc/hosts entry for client
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: '{{client_private_ip}} client'
+
+- name: /etc/hosts entry for server
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: '{{server_private_ip}} server'
+
+- name: evil user
+  become: true
+  ansible.builtin.user:
+    name: evil-user
+    password: '{{ "password" | password_hash("sha512") }}'
+    groups: ec2-user
+    append: true
+
+- name: evil user access to ec2-user home
+  ansible.builtin.file:
+    path: /home/ec2-user
+    mode: '755'

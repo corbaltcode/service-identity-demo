@@ -1,0 +1,17 @@
+---
+- name: agent.conf
+  ansible.builtin.template:
+    src: agent.conf.j2
+    dest: /opt/spire/conf/agent/agent.conf
+
+- name: spire-agent systemd service
+  become: true
+  ansible.builtin.copy:
+    src: spire-agent.service
+    dest: /etc/systemd/system/
+
+# - name: spire-agent systemd service started
+#   become: true
+#   ansible.builtin.systemd:
+#     name: spire-agent.service
+#     state: started

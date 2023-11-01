@@ -1,0 +1,35 @@
+---
+- hosts: all
+  name: gather facts
+  user: ec2-user
+  tasks:
+
+- hosts: spire_server
+  remote_user: ec2-user
+  gather_facts: no
+  roles:
+    - role: spire_server
+      client_node_selector: 'aws_iid:iamrole:arn:aws:iam::{{ aws_account_id }}:role/service-id-demo-client'
+      server_node_selector: 'aws_iid:iamrole:arn:aws:iam::{{ aws_account_id }}:role/service-id-demo-server'
+
+- hosts: client
+  remote_user: ec2-user
+  gather_facts: no
+  roles:
+    - demo
+  tasks:
+    - name: hostname
+      become: true
+      ansible.builtin.hostname:
+        name: echo-client
+
+- hosts: server
+  remote_user: ec2-user
+  gather_facts: no
+  roles:
+    - demo
+  tasks:
+    - name: hostname
+      become: true
+      ansible.builtin.hostname:
+        name: echo-server
